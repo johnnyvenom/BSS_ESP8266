@@ -32,23 +32,21 @@
 #include <OSCBundle.h>
 #include <OSCData.h>
 
-#define LEDON HIGH
-#define LEDOFF LOW
-//#define LEDON LOW
-//#define LEDOFF HIGH
+//#define LEDON HIGH
+//#define LEDOFF LOW
+#define LEDON LOW
+#define LEDOFF HIGH
 
 char ssid[] = "bodysuit";          // your network SSID (name)
 char pass[] = "bodysuit";                    // your network password
 
 // A UDP instance to let us send and receive packets over UDP
 WiFiUDP Udp;
-IPAddress outIp(192,168,1,255);       // remote IP of your computer
-IPAddress myIP;
-unsigned int outPort = 55000;          // remote port to receive OSC
+const IPAddress outIp(192,168,1,122);       // remote IP of your computer
+const unsigned int outPort = 55119;          // remote port to receive OSC
 const unsigned int localPort = 8888;        // local port to listen for UDP packets (here's where we send the packets)
 
 OSCErrorCode error;
-bool networkDiscoveryMode = 0;
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
@@ -71,15 +69,12 @@ void setup() {
 
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
-  Serial.println(myIP = WiFi.localIP());
-  outPort+=myIP[3];
+  Serial.println(WiFi.localIP());
 
   Serial.println("Starting UDP");
   Udp.begin(localPort);
   Serial.print("Local port: ");
   Serial.println(Udp.localPort());
-  Serial.print("Output port: ");
-  Serial.println(outPort);
 
 }
 
@@ -88,15 +83,18 @@ void led(OSCMessage &msg)
   if(msg.isInt(0))
   {
     int ledBlink = msg.getInt(0);
-    msg.add((int32_t)myIP[3]);
+    OSCMessage echo("/led");
+    echo.add(WiFi.localIP()[3]);
+    echo.add(ledBlink);
     Udp.beginPacket(outIp, outPort);
     msg.send(Udp);
     Udp.endPacket();
-    Serial.print("/led "); Serial.println(ledBlink);
+    msg.empty();
     switch(ledBlink) 
     {
       case 2:
         // blink
+        Serial.println("led 2");
         for(char i = 0; i<16; i++)
         {
           digitalWrite(LED_BUILTIN, LEDON);
@@ -106,6 +104,7 @@ void led(OSCMessage &msg)
         }
         break;
       case 3:
+        Serial.println("led 3");
         //solid on
         digitalWrite(LED_BUILTIN, LEDON);
         delay(3000);
@@ -126,26 +125,6 @@ void led(OSCMessage &msg)
   }
 }
 
-void networkDiscovery(OSCMessage &msg)
-{
-  // send network/discovery masterIP to start discovery mode
-  // this sets the master IP and enables the discovery mode routine in the main loop
-  // send network/discovery 0 to end discovery mode
-  // e.g. after the master has recorded all of the local device IP addresses
-  Serial.print("/networkDiscovery "); Serial.println(msg.getInt(0));
-  if(msg.isInt(0))
-  {
-    int masterIP = msg.getInt(0);
-    if (masterIP == 0) networkDiscoveryMode = 0;
-    else
-    {
-      outIp[3] = masterIP;
-      Serial.print("New master IP: "); Serial.println(masterIP);
-      networkDiscoveryMode = 1;
-    }
-  }
-}
-
 void loop() {
   OSCBundle bundle;
   int size = Udp.parsePacket();
@@ -156,24 +135,11 @@ void loop() {
     }
     if (!bundle.hasError()) {
       bundle.dispatch("/led", led);
-      bundle.dispatch("/network/discovery", networkDiscovery);
     } else {
       error = bundle.getError();
       Serial.print("error: ");
       Serial.println(error);
     }
-  }
-
-  if (networkDiscoveryMode)
-  {
-    // in discovery mode the device will send its IP address to the master on every loop
-    OSCMessage msg("/network/suitIP");
-    msg.add((int32_t)myIP[3]);
-    Udp.beginPacket(outIp, 55256);
-    msg.send(Udp);
-    Udp.endPacket();
-    msg.empty();
-    delay(100);
   }
 }
 
