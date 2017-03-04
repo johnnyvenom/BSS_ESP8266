@@ -47,6 +47,8 @@ const unsigned int localPort = 8888;        // local port to listen for UDP pack
 
 OSCErrorCode error;
 bool networkDiscoveryMode = 0;
+bool sensorActive = 0;
+unsigned long lastTime = -1;
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
@@ -59,7 +61,7 @@ void setup() {
   Serial.println();
   Serial.print("Connecting to ");
   Serial.print(ssid);
-  WiFi.begin(ssid, pass);
+  WiFi.begin(ssid);
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -143,6 +145,17 @@ void networkDiscovery(OSCMessage &msg)
   }
 }
 
+void sensor(OSCMessage &msg)
+{
+  Udp.beginPacket(outIp, outPort);
+  msg.send(Udp);
+  Udp.endPacket();
+  if (msg.isInt(0))
+  {
+    sensorActive = msg.getInt(0) > 0;
+  }
+}
+
 void loop() {
   OSCBundle bundle;
   int size = Udp.parsePacket();
@@ -154,10 +167,27 @@ void loop() {
     if (!bundle.hasError()) {
       bundle.dispatch("/led", led);
       bundle.dispatch("/network/discovery", networkDiscovery);
+      bundle.dispatch("/sensor", sensor);
     } else {
       error = bundle.getError();
       Serial.print("error: ");
       Serial.println(error);
+    }
+  }
+
+  if (sensorActive)
+  {
+    unsigned long timer = millis();
+    Serial.print("Time is: "); Serial.println(timer);
+    if (timer != lastTime)
+    {
+      lastTime = timer;
+      OSCMessage msg("/sensor/timer");
+      msg.add((int32_t)lastTime);
+      Udp.beginPacket(outIp, outPort);
+      msg.send(Udp);
+      Udp.endPacket();
+      msg.empty();
     }
   }
 
