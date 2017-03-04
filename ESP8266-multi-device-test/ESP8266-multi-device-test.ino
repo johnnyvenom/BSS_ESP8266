@@ -32,10 +32,8 @@
 #include <OSCBundle.h>
 #include <OSCData.h>
 
-#define LEDON HIGH
-#define LEDOFF LOW
-//#define LEDON LOW
-//#define LEDOFF HIGH
+#define LEDON LOW
+#define LEDOFF HIGH
 
 char ssid[] = "bodysuit";          // your network SSID (name)
 char pass[] = "bodysuit";                    // your network password
@@ -85,13 +83,12 @@ void setup() {
 
 void led(OSCMessage &msg) 
 {  
+  Udp.beginPacket(outIp, outPort);
+  msg.send(Udp);
+  Udp.endPacket();
   if(msg.isInt(0))
   {
     int ledBlink = msg.getInt(0);
-    msg.add((int32_t)myIP[3]);
-    Udp.beginPacket(outIp, outPort);
-    msg.send(Udp);
-    Udp.endPacket();
     Serial.print("/led "); Serial.println(ledBlink);
     switch(ledBlink) 
     {
