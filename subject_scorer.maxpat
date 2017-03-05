@@ -38,6 +38,22 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"bgcolor" : [ 0.290196, 0.309804, 0.301961, 0.0 ],
+					"blinkcolor" : [ 0.996078, 0.752941, 0.05098, 1.0 ],
+					"id" : "obj-15",
+					"ignoreclick" : 1,
+					"maxclass" : "button",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "bang" ],
+					"outlinecolor" : [ 0.376471, 0.384314, 0.4, 0.0 ],
+					"patching_rect" : [ 525.0, 391.0, 66.0, 66.0 ],
+					"style" : ""
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-10",
 					"maxclass" : "message",
 					"numinlets" : 2,
@@ -45,7 +61,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 73.0, 857.0, 113.0, 20.0 ],
 					"style" : "",
-					"text" : "3-/device-8 solid"
+					"text" : "3-/device-1 random"
 				}
 
 			}
@@ -122,9 +138,9 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 50.0, 435.0, 546.0, 20.0 ],
+					"patching_rect" : [ 50.0, 435.0, 473.0, 20.0 ],
 					"style" : "",
-					"text" : "Trial 35: Netgear , WPA2. 5.00 broadcast"
+					"text" : "Trial 1: , ."
 				}
 
 			}
@@ -583,9 +599,21 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-15", 0 ],
+					"disabled" : 0,
+					"hidden" : 0,
+					"midpoints" : [ 205.5, 745.0, 603.0, 745.0, 603.0, 378.0, 534.5, 378.0 ],
+					"order" : 0,
+					"source" : [ "obj-4", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-20", 0 ],
 					"disabled" : 0,
 					"hidden" : 0,
+					"order" : 1,
 					"source" : [ "obj-4", 0 ]
 				}
 

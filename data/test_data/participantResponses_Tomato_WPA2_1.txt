@@ -1,0 +1,1 @@
+trial, "Trial 1: Tomato WPA2. 1.0000 same msg same time";1-/device-1, solid;2-/device-1, random;
