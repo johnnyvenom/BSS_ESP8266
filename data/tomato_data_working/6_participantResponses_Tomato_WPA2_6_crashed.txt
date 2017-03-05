@@ -1,0 +1,1 @@
+trial, "Trial 6: Tomato WPA2. 5.0000 broadcast";4-/device-2, solid;5-/device-5, solid;
