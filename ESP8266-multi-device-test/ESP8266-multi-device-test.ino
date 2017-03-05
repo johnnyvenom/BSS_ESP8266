@@ -56,12 +56,12 @@ void setup() {
 
   Serial.begin(115200);
 
-  // Connect to WiFi network
+  // Connect to WiFi network  
   Serial.println();
   Serial.println();
   Serial.print("Connecting to ");
   Serial.print(ssid);
-  WiFi.begin(ssid);
+  WiFi.begin(ssid, pass);
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
