@@ -1,1 +1,0 @@
-trial, "Trial 38: Netgear WPA2. 7.0000 same/staggered with sensor";1-/device-1, solid;2-/device-1, solid;3-/device-1, solid;

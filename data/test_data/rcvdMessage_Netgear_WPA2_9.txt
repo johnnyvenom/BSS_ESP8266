@@ -1,1 +1,0 @@
-trial, rcvdMessage_Netgear_WPA2_9.txt;1-/device-1, 3 9378977.874973 solid 428925 0;2-/device-1, 3 9384957.439621 blinking 437395 0;3-/device-1, 3 9391485.798331 random 443824 410 0;

@@ -1,1 +1,0 @@
-trial, "Trial 39: Netgear WPA2. 6.0000 same/same with sensor";3-/device-8, random;
